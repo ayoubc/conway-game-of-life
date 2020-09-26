@@ -1,5 +1,6 @@
 .root {
-    height: 500px;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,15 +10,21 @@ body{
     height: 100%;
 }
 
-.content{
-    height: 400px;
-    width: 500px;
-    border: 2px solid black;
+.grid {
+    width: 650px;
+    height: 650px;
+    display: grid;
+    /* grid-template-columns: repeat(50, 1fr);
+    grid-template-rows: repeat(50, 1fr); */
+    background-color: white;
+    margin: auto;
 }
 
-table {
-    height: 100%;
-    width: 100%;
-    border-spacing: unset;
-    border-collapse: collapse;
+.cell {
+    border: .3px solid #cccccc;
+}
+
+h1 {
+    text-align: center;
+    margin: 0 0 10px 0;
 }
