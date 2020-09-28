@@ -16,7 +16,8 @@ body{
     display: grid;
     /* grid-template-columns: repeat(50, 1fr);
     grid-template-rows: repeat(50, 1fr); */
-    background-color: white;
+    /* background-color: white; */
+    background-color: #bebaba;
     margin: auto;
 }
 
