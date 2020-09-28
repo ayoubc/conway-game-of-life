@@ -2,6 +2,7 @@ const DIM = 50;
 const COLOR = 'yellow';
 const di = [0, 1, 1, 1, 0, -1, -1, -1];
 const dj = [1, 1, 0, -1, -1, -1, 0, 1];
+let speed = 0.2; // 1 second
 
 document.addEventListener('DOMContentLoaded', runApp);
 
@@ -15,7 +16,33 @@ function runApp() {
     // console.log('Cells', cells);
     // getStartingState(null, cells);
     aliveCells = [];
-    for(let j = 25; j<35; j++) aliveCells.push([25, j]);
+    // Pentadecathlon with 10 cells ina row
+    for(let j = 20; j<30; j++) aliveCells.push([25, j]);
+    // Pentadecathlon with 5 cells in a row
+    for(let j = 35; j<40; j++) aliveCells.push([4, j]);
+    // Blinker
+    aliveCells = aliveCells.concat([
+        [0, 1],
+        [1, 1],
+        [2, 1]
+    ]);
+    // Boat
+    aliveCells = aliveCells.concat([
+        [4, 4],
+        [4, 5],
+        [5, 4],
+        [6, 5],
+        [5, 6]
+    ]);
+
+    // Pulsar
+    aliveCells = aliveCells.concat([
+        [10, 5],
+        [11, 6],
+        [11, 7],
+        [10, 7],
+        [9, 7]
+    ])
     getStartingState(aliveCells, cells);
 
     playGame(DIM, cells);
@@ -116,7 +143,7 @@ function runApp() {
     function playGame(dimension, cells) {
         setInterval(() => {
             updateGridState(dimension, cells);
-        }, 1000);
+        }, speed * 1000);
     }
 
     function getStartingState(aliveCells, cells) {
