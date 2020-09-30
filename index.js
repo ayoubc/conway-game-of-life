@@ -1,8 +1,13 @@
-const DIM = 50;
-const COLOR = 'yellow';
+let dim = 100;
+const COLOR = 'black';
 const di = [0, 1, 1, 1, 0, -1, -1, -1];
 const dj = [1, 1, 0, -1, -1, -1, 0, 1];
 let speed = 0.2; // 1 second
+let started = false;
+let interval = undefined;
+let cells = [];
+let aliveCells = [];
+
 
 document.addEventListener('DOMContentLoaded', runApp);
 
@@ -10,44 +15,45 @@ document.addEventListener('DOMContentLoaded', runApp);
 function runApp() {
 
     let grid = document.querySelector('.grid');
-    buildGrid(DIM);
-    // grid.innerHTML = createGrid(DIM);
-    const cells = Array.from(document.getElementsByClassName('cell'));
-    // console.log('Cells', cells);
-    // getStartingState(null, cells);
-    aliveCells = [];
-    // Pentadecathlon with 10 cells ina row
-    for(let j = 20; j<30; j++) aliveCells.push([25, j]);
-    // Pentadecathlon with 5 cells in a row
-    for(let j = 35; j<40; j++) aliveCells.push([4, j]);
-    // Blinker
-    aliveCells = aliveCells.concat([
-        [0, 1],
-        [1, 1],
-        [2, 1]
-    ]);
-    // Boat
-    aliveCells = aliveCells.concat([
-        [4, 4],
-        [4, 5],
-        [5, 4],
-        [6, 5],
-        [5, 6]
-    ]);
+    const startBtn = document.querySelector('.start-btn');
+    startBtn.addEventListener('click', function() {
+        if (started){
+            started = false;
+            this.textContent = 'Start';
+            clearInterval(interval);
+        }
+        else{
+            started = true;
+            this.textContent = 'Stop';
+            playGame(dim, cells);
+        }
+    });
 
-    // Pulsar
-    aliveCells = aliveCells.concat([
-        [10, 5],
-        [11, 6],
-        [11, 7],
-        [10, 7],
-        [9, 7]
-    ])
-    getStartingState(aliveCells, cells);
+    const dimensionBtn = document.querySelector('.grid-dim-btn');
+    dimensionBtn.addEventListener('click', function() {
+        const inputDim = document.querySelector('#dimension');
+        dim = +inputDim.value;
+        buildGrid(dim);
+        fillGrid();
+    })
 
-    playGame(DIM, cells);
+    buildGrid(dim);
+
+    aliveCells = aliveCells.concat(PATTERNS['blinker']);
+    aliveCells = aliveCells.concat(PATTERNS['boat'].transform(5, 0));
+    aliveCells = aliveCells.concat(PATTERNS['pulsar'].transform(9, 0));
+    
+    aliveCells = aliveCells.concat(PATTERNS['gosperGlidingGun'].transform(12, 20));
+    aliveCells = aliveCells.concat(PATTERNS['lightWeithSpaceShip'].transform(40, 25));
+
+    aliveCells = aliveCells.concat(PATTERNS['pentadecathlon'](5).transform(45, 50));
+    aliveCells = aliveCells.concat(PATTERNS['pentadecathlon'](10).transform(60, 40));
+
+    fillGrid();
+
 
     function buildGrid(dimension) {
+        grid.innerHTML = '';
 
         grid.style.gridTemplateColumns = "repeat(" + dimension + ", 1fr)";
         grid.style.gridTemplateRows = "repeat(" + dimension + ", 1fr)";
@@ -59,6 +65,11 @@ function runApp() {
 
             grid.appendChild(cell);
         }
+    }
+
+    function fillGrid() {
+        cells = Array.from(document.getElementsByClassName('cell'));
+        getStartingState(aliveCells, cells);
     }
 
     function randomColumn(dimension) {
@@ -90,11 +101,11 @@ function runApp() {
     }
 
     function isValid(row, column) {
-        return row >= 0 && row < DIM && column >= 0 && column < DIM;
+        return row >= 0 && row < dim && column >= 0 && column < dim;
     }
 
     function getCell(row, column) {
-        return row * DIM + column;
+        return row * dim + column;
     }
 
     function checkStatus(row, column, cells) {
@@ -141,23 +152,16 @@ function runApp() {
     }
 
     function playGame(dimension, cells) {
-        setInterval(() => {
+        interval = setInterval(() => {
             updateGridState(dimension, cells);
         }, speed * 1000);
     }
 
     function getStartingState(aliveCells, cells) {
-        if (aliveCells) {
-            aliveCells.forEach(aliveCell => {
-                cell = cells[getCell(aliveCell[0], aliveCell[1])];
-                cell.style.backgroundColor = COLOR;
-            });
-        }
-        else {
-            cells.forEach(cell => {
-                cell.style.backgroundColor = COLOR;
-            });
-        }
+        aliveCells.forEach(aliveCell => {
+            cell = cells[getCell(aliveCell[0], aliveCell[1])];
+            cell.style.backgroundColor = COLOR;
+        });
     }
 
 }
