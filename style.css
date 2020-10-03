@@ -10,7 +10,7 @@ body{
     height: 100vh;
     margin: 0;
     font-family: Linux Libertine,Hoefler Text,Georgia,Times New Roman,Times,serif;
-    background-color: lightblue;
+    background-color: #7e9faf;
 }
 
 .grid {
@@ -36,11 +36,16 @@ body{
 
 .start-btn{
     cursor: pointer;
-    margin-bottom: 10px;
 }
 
 #dimension {
     width: 75%;
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+#patterns {
+    width: 100%;
 }
 
 label {
@@ -55,7 +60,20 @@ label {
     flex-direction: column;
 }
 
-button {
+/* button {
     border: 1px solid;
     border-radius: 5px;
+} */
+
+.mar-btm {
+    margin-bottom: 10px;
+}
+
+button, .raius-brdr {
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+.grid-dim-btn {
+    width: 20%;
 }

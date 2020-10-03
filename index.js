@@ -35,19 +35,40 @@ function runApp() {
         dim = +inputDim.value;
         buildGrid(dim);
         fillGrid();
-    })
+    });
+
+    const select = document.querySelector('#patterns');
+    for(let key in PATTERNS){
+        let option = document.createElement('option');
+        option.textContent = PATTERNS[key].name;
+        option.classList.add(key);
+        select.appendChild(option);
+    }
+    select.addEventListener('change', function() {
+        selectedOption = this.options[this.selectedIndex].classList[0];
+        if(selectedOption === 'pentadecathlon') {
+            length = parseInt(window.prompt('Length of Pentadecathlon ?', '10')) || 10;
+            aliveCells = PATTERNS[selectedOption].cells(length).transform(25, 25);
+        }
+        else{
+            aliveCells = PATTERNS[selectedOption].cells.transform(25, 25);
+        }
+        clearGrid();
+        fillGrid();
+    });
+    
 
     buildGrid(dim);
 
-    aliveCells = aliveCells.concat(PATTERNS['blinker']);
-    aliveCells = aliveCells.concat(PATTERNS['boat'].transform(5, 0));
-    aliveCells = aliveCells.concat(PATTERNS['pulsar'].transform(9, 0));
+    aliveCells = aliveCells.concat(PATTERNS['blinker'].cells);
+    aliveCells = aliveCells.concat(PATTERNS['boat'].cells.transform(5, 0));
+    aliveCells = aliveCells.concat(PATTERNS['pulsar'].cells.transform(9, 0));
     
-    aliveCells = aliveCells.concat(PATTERNS['gosperGlidingGun'].transform(12, 20));
-    aliveCells = aliveCells.concat(PATTERNS['lightWeithSpaceShip'].transform(40, 25));
+    aliveCells = aliveCells.concat(PATTERNS['gosperGlidingGun'].cells.transform(12, 20));
+    aliveCells = aliveCells.concat(PATTERNS['lightWeithSpaceShip'].cells.transform(40, 25));
 
-    aliveCells = aliveCells.concat(PATTERNS['pentadecathlon'](5).transform(45, 50));
-    aliveCells = aliveCells.concat(PATTERNS['pentadecathlon'](10).transform(60, 40));
+    aliveCells = aliveCells.concat(PATTERNS['pentadecathlon'].cells(5).transform(45, 50));
+    aliveCells = aliveCells.concat(PATTERNS['pentadecathlon'].cells(10).transform(60, 40));
 
     fillGrid();
 
@@ -84,7 +105,7 @@ function runApp() {
         }
     }
 
-    function clearGrid(cells) {
+    function clearGrid() {
         cells.forEach(cell => cell.style.backgroundColor = '');
     }
 
