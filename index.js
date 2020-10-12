@@ -16,13 +16,14 @@ function runApp() {
 
     let grid = document.querySelector('.grid');
     const startBtn = document.querySelector('.start-btn');
-    startBtn.addEventListener('click', function() {
-        if (started){
+
+    startBtn.addEventListener('click', function () {
+        if (started) {
             started = false;
             this.textContent = 'Start';
             clearInterval(interval);
         }
-        else{
+        else {
             started = true;
             this.textContent = 'Stop';
             playGame(dim, cells);
@@ -30,7 +31,7 @@ function runApp() {
     });
 
     const dimensionBtn = document.querySelector('.grid-dim-btn');
-    dimensionBtn.addEventListener('click', function() {
+    dimensionBtn.addEventListener('click', function () {
         const inputDim = document.querySelector('#dimension');
         dim = +inputDim.value;
         buildGrid(dim);
@@ -38,32 +39,39 @@ function runApp() {
     });
 
     const select = document.querySelector('#patterns');
-    for(let key in PATTERNS){
+    for (let key in PATTERNS) {
         let option = document.createElement('option');
         option.textContent = PATTERNS[key].name;
         option.classList.add(key);
         select.appendChild(option);
     }
-    select.addEventListener('change', function() {
+    select.addEventListener('change', function () {
         selectedOption = this.options[this.selectedIndex].classList[0];
-        if(selectedOption === 'pentadecathlon') {
+        if (selectedOption === 'pentadecathlon') {
             length = parseInt(window.prompt('Length of Pentadecathlon ?', '10')) || 10;
             aliveCells = PATTERNS[selectedOption].cells(length).transform(25, 25);
         }
-        else{
+        else {
             aliveCells = PATTERNS[selectedOption].cells.transform(25, 25);
         }
         clearGrid();
         fillGrid();
     });
-    
+
+    const speedSlider = document.querySelector('#speed-slider');
+    speedSlider.addEventListener('change', function () {
+        speed = 1 / this.value;
+        console.log(speed);
+        clearInterval(interval);
+        playGame(dim, cells);
+    })
 
     buildGrid(dim);
 
     aliveCells = aliveCells.concat(PATTERNS['blinker'].cells);
     aliveCells = aliveCells.concat(PATTERNS['boat'].cells.transform(5, 0));
     aliveCells = aliveCells.concat(PATTERNS['pulsar'].cells.transform(9, 0));
-    
+
     aliveCells = aliveCells.concat(PATTERNS['gosperGlidingGun'].cells.transform(12, 20));
     aliveCells = aliveCells.concat(PATTERNS['lightWeithSpaceShip'].cells.transform(40, 25));
 
@@ -161,12 +169,12 @@ function runApp() {
                 gridState[getCell(row, column)] = status;
             }
         }
-        
-        for(let i = 0; i < totalCells; i++) {
-            if(gridState[i]){
+
+        for (let i = 0; i < totalCells; i++) {
+            if (gridState[i]) {
                 makeCellAlive(cells[i]);
             }
-            else{
+            else {
                 killCell(cells[i]);
             }
         }
