@@ -62,8 +62,10 @@ function runApp() {
     speedSlider.addEventListener('change', function () {
         speed = 1 / this.value;
         console.log(speed);
-        clearInterval(interval);
-        playGame(dim, cells);
+        if(started) {
+            clearInterval(interval);
+            playGame(dim, cells);
+        }
     })
 
     buildGrid(dim);
