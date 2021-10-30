@@ -16,6 +16,7 @@ function runApp() {
 
     let grid = document.querySelector('.grid');
     const startBtn = document.querySelector('.start-btn');
+    const randomGrid = document.querySelector('.random-btn');
 
     startBtn.addEventListener('click', function () {
         if (started) {
@@ -30,6 +31,31 @@ function runApp() {
         }
     });
 
+    randomGrid.addEventListener('click', function() {
+        // get aliveCells randomly
+        let fillPercentage = Math.floor(Math.random() * 100);
+        aliveCells = generateRandomAliveCells(fillPercentage, dim);
+        clearGrid();
+        fillGrid();
+    });
+
+    function randomCell(dimension) {
+        let randomCol = Math.floor(Math.random() * dimension);
+        let randomRow = Math.floor(Math.random() * dimension);
+        return [randomRow, randomCol];
+    }
+
+    function generateRandomAliveCells(fillPercentage, dimension) {
+        let totalNum = Math.floor((dimension * dimension * fillPercentage) / 100);
+        let alive = [];
+        for(let i=0;i<totalNum;i++) {
+            alive.push(randomCell(dimension));
+        }
+
+        return alive;
+    }
+
+    
     const dimensionBtn = document.querySelector('.grid-dim-btn');
     dimensionBtn.addEventListener('click', function () {
         const inputDim = document.querySelector('#dimension');
@@ -99,18 +125,6 @@ function runApp() {
     function fillGrid() {
         cells = Array.from(document.getElementsByClassName('cell'));
         getStartingState(aliveCells, cells);
-    }
-
-    function randomColumn(dimension) {
-        return Math.floor(Math.random() * dimension);
-    }
-
-    function colorRandomCells(dimension, cells) {
-        clearGrid(cells);
-        for (let row = 0; row < dimension; row++) {
-            const index = randomColumn(dimension);
-            cells[index + row * dimension].style.backgroundColor = COLOR;
-        }
     }
 
     function clearGrid() {

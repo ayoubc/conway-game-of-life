@@ -73,6 +73,7 @@ label {
 button, .radius-brdr {
     border-radius: 5px;
     border: 1px solid;
+    cursor: pointer;
 }
 
 .grid-dim-btn {
