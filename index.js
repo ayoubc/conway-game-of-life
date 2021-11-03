@@ -89,7 +89,9 @@ function runApp() {
         speed = 1 / this.value;
         console.log(speed);
         clearInterval(interval);
-        playGame(dim, cells);
+        if (started) {
+            playGame(dim, cells);
+        }
     })
 
     buildGrid(dim);
