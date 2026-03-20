@@ -13,11 +13,7 @@
       <div class="panel-header" id="panel-drag-handle">Conway's Game of Life</div>
       <button class="start-btn mar-btm">Start</button>
       <button class="random-btn mar-btm">Random Grid</button>
-      <div class="grid-dim mar-btm">
-        <label for="dimension">Random area size: </label>
-        <input type="number" id="dimension" value="100" min="50" max="100">
-        <button class="grid-dim-btn">Ok</button>
-      </div>
+      <button class="clear-btn mar-btm">Clear</button>
       <div class="patterns-list mar-btm">
         <label for="cars">Choose a patterns:</label>
         <select class="radius-brdr" name="patterns" id="patterns">
@@ -25,7 +21,7 @@
       </div>
       <div class="speed-slider">
         <label for="speed-slider">Speed:</label>
-        <input type="range" id="speed-slider" min="1" max="100" value="5">
+        <input type="range" id="speed-slider" min="1" max="100" value="50">
       </div>
       <small>Tip: drag canvas to pan, mouse wheel to zoom, click a cell to toggle. Drag this panel by its header.</small>
     </div>

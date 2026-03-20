@@ -10,10 +10,9 @@ const NEIGHBORS = [
   [-1, 1]
 ];
 
-let speed = 0.2; // seconds per generation
+let speed = 0.02; // seconds per generation (default 50% slider)
 let started = false;
 let interval;
-let randomAreaSize = 100;
 
 let liveCells = new Set(); // key format: "x,y"
 
@@ -41,8 +40,7 @@ function runApp() {
 
   const startBtn = document.querySelector('.start-btn');
   const randomBtn = document.querySelector('.random-btn');
-  const dimensionBtn = document.querySelector('.grid-dim-btn');
-  const dimensionInput = document.querySelector('#dimension');
+  const clearBtn = document.querySelector('.clear-btn');
   const speedSlider = document.querySelector('#speed-slider');
   const patternSelect = document.querySelector('#patterns');
   const controlPanel = document.querySelector('#control-panel');
@@ -209,6 +207,14 @@ function runApp() {
     clearInterval(interval);
   }
 
+  function clearGame() {
+    liveCells.clear();
+    started = false;
+    startBtn.textContent = 'Start';
+    stopGame();
+    render();
+  }
+
   function addPattern(patternCells, offsetX, offsetY) {
     patternCells.forEach(([x, y]) => addCell(x + offsetX, y + offsetY));
   }
@@ -221,12 +227,13 @@ function runApp() {
     // addPattern(PATTERNS['boat'].cells, cx + 5, cy);
     // addPattern(PATTERNS['pulsar'].cells, cx + 9, cy);
     addPattern(PATTERNS['gosperGlidingGun'].cells, cx + 12, cy + 20);
+    patternSelect.value = PATTERNS['gosperGlidingGun'].name;
     // addPattern(PATTERNS['lightWeithSpaceShip'].cells, cx + 40, cy + 25);
     // addPattern(PATTERNS['pentadecathlon'].cells(5), cx + 45, cy + 50);
     // addPattern(PATTERNS['pentadecathlon'].cells(10), cx + 60, cy + 40);
   }
 
-  function randomizeAroundCamera(areaSize, fillPercentage = null) {
+  function randomizeAroundCamera(areaSize = 100, fillPercentage = null) {
     const fill = fillPercentage ?? Math.floor(Math.random() * 100);
     const half = Math.floor(areaSize / 2);
     const centerX = Math.floor(cameraX);
@@ -242,6 +249,28 @@ function runApp() {
     render();
   }
 
+  function askRandomGridSize(defaultSize = 100) {
+    while (true) {
+      const input = window.prompt('Grid size (positive integer)?', String(defaultSize));
+      if (input === null) return null;
+
+      const size = Number.parseInt(input, 10);
+      if (Number.isInteger(size) && size > 0) return size;
+
+      window.alert('Please enter a positive integer !');
+    }
+  }
+
+  function populatePatternSelectOptions() {
+    for (const keyName in PATTERNS) {
+      const option = document.createElement('option');
+      option.textContent = PATTERNS[keyName].name;
+      option.value = PATTERNS[keyName].name;
+      option.classList.add(keyName);
+      patternSelect.appendChild(option);
+    }
+  }
+
   startBtn.addEventListener('click', function () {
     if (started) {
       started = false;
@@ -255,22 +284,21 @@ function runApp() {
   });
 
   randomBtn.addEventListener('click', function () {
-    randomizeAroundCamera(randomAreaSize);
+    const size = askRandomGridSize(100);
+    if (size === null) return;
+    randomizeAroundCamera(size);
   });
 
-  dimensionBtn.addEventListener('click', function () {
-    randomAreaSize = Math.max(10, Number(dimensionInput.value) || 100);
+  clearBtn.addEventListener('click', function () {
+    clearGame();
   });
 
-  for (const keyName in PATTERNS) {
-    const option = document.createElement('option');
-    option.textContent = PATTERNS[keyName].name;
-    option.classList.add(keyName);
-    patternSelect.appendChild(option);
-  }
+  populatePatternSelectOptions();
 
   patternSelect.addEventListener('change', function () {
-    const selectedOption = this.options[this.selectedIndex].classList[0];
+    const selectedOption = PATTERN_NAME_TO_KEY[this.value];
+    if (!selectedOption) return;
+
     const centerX = Math.floor(cameraX);
     const centerY = Math.floor(cameraY);
     let cells;

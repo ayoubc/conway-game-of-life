@@ -44,12 +44,6 @@ body{
     cursor: pointer;
 }
 
-#dimension {
-    width: 75%;
-    border-radius: 5px;
-    border: 1px solid;
-}
-
 #patterns {
     width: 100%;
 }
@@ -69,7 +63,7 @@ label {
 .control-panel {
     position: absolute;
     top: 20px;
-    left: 20px;
+    right: 20px;
     width: 280px;
     max-height: calc(100vh - 40px);
     padding: 10px;
@@ -103,8 +97,4 @@ button, .radius-brdr {
     border-radius: 5px;
     border: 1px solid;
     cursor: pointer;
-}
-
-.grid-dim-btn {
-    width: 20%;
 }

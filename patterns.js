@@ -110,6 +110,10 @@ const PATTERNS = {
     }
 }
 
+const PATTERN_NAME_TO_KEY = Object.fromEntries(
+    Object.entries(PATTERNS).map(([patternKey, patternData]) => [patternData.name, patternKey])
+);
+
 
 Array.prototype.transform = function (si, sj) {
     return this.map(pair => [pair[0] + si, pair[1] + sj]);
