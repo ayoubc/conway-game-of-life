@@ -93,6 +93,16 @@ label {
     margin-bottom: 10px;
 }
 
+.cursor-coords {
+    margin: 8px 0 10px;
+    padding: 6px 8px;
+    border: 1px solid #b6c1c7;
+    border-radius: 6px;
+    background: #f3f6f8;
+    font-size: 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
 button, .radius-brdr {
     border-radius: 5px;
     border: 1px solid;

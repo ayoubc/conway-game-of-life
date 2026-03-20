@@ -43,6 +43,7 @@ function runApp() {
   const clearBtn = document.querySelector('.clear-btn');
   const speedSlider = document.querySelector('#speed-slider');
   const patternSelect = document.querySelector('#patterns');
+  const cursorCoords = document.querySelector('#cursor-coords');
   const controlPanel = document.querySelector('#control-panel');
   const panelDragHandle = document.querySelector('#panel-drag-handle');
 
@@ -97,6 +98,12 @@ function runApp() {
       Math.floor((sx - width / 2) / cellSize + cameraX),
       Math.floor((sy - height / 2) / cellSize + cameraY)
     ];
+  }
+
+  function updateCursorCoords(sx, sy) {
+    if (!cursorCoords) return;
+    const [x, y] = screenToWorld(sx, sy);
+    cursorCoords.textContent = `Cursor: x=${x}, y=${y}`;
   }
 
   function getVisibleWorldBounds() {
@@ -343,6 +350,19 @@ function runApp() {
     dragStartY = event.clientY;
     cameraStartX = cameraX;
     cameraStartY = cameraY;
+  });
+
+  canvas.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    const sx = event.clientX - rect.left;
+    const sy = event.clientY - rect.top;
+    if (sx < 0 || sy < 0 || sx > rect.width || sy > rect.height) return;
+    updateCursorCoords(sx, sy);
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    if (!cursorCoords) return;
+    cursorCoords.textContent = 'Cursor: x=?, y=?';
   });
 
   window.addEventListener('mousemove', (event) => {
