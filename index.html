@@ -1,34 +1,13 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>Game of life</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-  <div class="root">
-    <canvas class="grid" id="life-canvas"></canvas>
-    <div class="control-panel" id="control-panel">
-      <div class="panel-header" id="panel-drag-handle">Conway's Game of Life</div>
-      <button class="start-btn mar-btm">Start</button>
-      <button class="random-btn mar-btm">Random Grid</button>
-      <button class="clear-btn mar-btm">Clear</button>
-      <div class="patterns-list mar-btm">
-        <label for="cars">Choose a patterns:</label>
-        <select class="radius-brdr" name="patterns" id="patterns">
-        </select>
-      </div>
-      <div class="speed-slider">
-        <label for="speed-slider">Speed:</label>
-        <input type="range" id="speed-slider" min="1" max="100" value="50">
-      </div>
-      <div class="cursor-coords" id="cursor-coords">Cursor: x=?, y=?</div>
-      <small>Tip: drag canvas to pan, mouse wheel to zoom, click a cell to toggle. Drag this panel by its header.</small>
-    </div>
-  </div>
-  <script src="./patterns.js"></script>
-  <script src="./index.js"></script>
-</body>
-
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>conway-game-of-life</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
