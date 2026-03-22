@@ -1,37 +1,14 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>Game of life</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-  <div class="root">
-    <canvas class="grid" id="life-canvas"></canvas>
-    <div class="control-panel" id="control-panel">
-      <div class="panel-header" id="panel-drag-handle">Conway's Game of Life</div>
-      <button class="start-btn mar-btm">Start</button>
-      <button class="random-btn mar-btm">Random Grid</button>
-      <div class="grid-dim mar-btm">
-        <label for="dimension">Random area size: </label>
-        <input type="number" id="dimension" value="100" min="50" max="100">
-        <button class="grid-dim-btn">Ok</button>
-      </div>
-      <div class="patterns-list mar-btm">
-        <label for="cars">Choose a patterns:</label>
-        <select class="radius-brdr" name="patterns" id="patterns">
-        </select>
-      </div>
-      <div class="speed-slider">
-        <label for="speed-slider">Speed:</label>
-        <input type="range" id="speed-slider" min="1" max="100" value="5">
-      </div>
-      <small>Tip: drag canvas to pan, mouse wheel to zoom, click a cell to toggle. Drag this panel by its header.</small>
-    </div>
-  </div>
-  <script src="./patterns.js"></script>
-  <script src="./index.js"></script>
-</body>
-
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/conway-game-of-life/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>conway-game-of-life</title>
+    <script type="module" crossorigin src="/conway-game-of-life/assets/index-Dc48tS9X.js"></script>
+    <link rel="stylesheet" crossorigin href="/conway-game-of-life/assets/index-CEVwkvAW.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
