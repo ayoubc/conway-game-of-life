@@ -1,4 +1,5 @@
-import type { PatternMap } from './types';
+import type { Cell, PatternDefinition, PatternMap } from './types';
+import { isPatternGenerator } from './types';
 
 export const PATTERNS: PatternMap = {
   blinker: {
@@ -66,3 +67,11 @@ export const PATTERNS: PatternMap = {
 export const PATTERN_NAME_TO_KEY = Object.fromEntries(
   Object.entries(PATTERNS).map(([key, data]) => [data.name, key])
 );
+
+export function resolvePatternCells(pattern: PatternDefinition, length = 10): Cell[] {
+  if (isPatternGenerator(pattern.cells)) {
+    return pattern.cells(length);
+  }
+
+  return pattern.cells;
+}

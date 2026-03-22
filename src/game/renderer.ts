@@ -1,4 +1,5 @@
 import type { CameraState, Cell, CellKey, VisibleBounds } from './types';
+import { fromCellKey } from './cellKey';
 
 const COLOR = 'black';
 
@@ -39,11 +40,6 @@ export function getVisibleWorldBounds(camera: CameraState, canvas: HTMLCanvasEle
   const minY = Math.floor(camera.y - height / (2 * camera.cellSize)) - 1;
   const maxY = Math.ceil(camera.y + height / (2 * camera.cellSize)) + 1;
   return { minX, maxX, minY, maxY };
-}
-
-function parseKey(cellKey: CellKey): Cell {
-  const [x, y] = cellKey.split(',').map(Number);
-  return [x, y];
 }
 
 export function renderGrid(
@@ -103,7 +99,7 @@ export function renderGrid(
 
   ctx.fillStyle = COLOR;
   for (const cellKey of liveCells) {
-    const [x, y] = parseKey(cellKey);
+    const [x, y] = fromCellKey(cellKey);
     if (x < bounds.minX || x > bounds.maxX || y < bounds.minY || y > bounds.maxY) continue;
     const [sx, sy] = worldToScreen(x, y, camera, canvas);
     ctx.fillRect(Math.floor(sx), Math.floor(sy), Math.ceil(camera.cellSize), Math.ceil(camera.cellSize));

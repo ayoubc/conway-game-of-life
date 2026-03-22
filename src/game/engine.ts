@@ -1,4 +1,5 @@
 import type { Cell, CellKey } from './types';
+import { fromCellKey, toCellKey } from './cellKey';
 
 const NEIGHBORS: Cell[] = [
   [0, 1],
@@ -14,29 +15,20 @@ const NEIGHBORS: Cell[] = [
 export class GameEngine {
   private liveCells = new Set<CellKey>();
 
-  private key(x: number, y: number): CellKey {
-    return `${x},${y}`;
-  }
-
-  private parseKey(cellKey: CellKey): Cell {
-    const [x, y] = cellKey.split(',').map(Number);
-    return [x, y];
-  }
-
   getCells(): Set<CellKey> {
     return this.liveCells;
   }
 
   hasCell(x: number, y: number): boolean {
-    return this.liveCells.has(this.key(x, y));
+    return this.liveCells.has(toCellKey(x, y));
   }
 
   addCell(x: number, y: number): void {
-    this.liveCells.add(this.key(x, y));
+    this.liveCells.add(toCellKey(x, y));
   }
 
   removeCell(x: number, y: number): void {
-    this.liveCells.delete(this.key(x, y));
+    this.liveCells.delete(toCellKey(x, y));
   }
 
   toggleCell(x: number, y: number): void {
@@ -68,9 +60,9 @@ export class GameEngine {
     const neighborCounts = new Map<CellKey, number>();
 
     for (const cellKey of this.liveCells) {
-      const [x, y] = this.parseKey(cellKey);
+      const [x, y] = fromCellKey(cellKey);
       for (const [dx, dy] of NEIGHBORS) {
-        const nKey = this.key(x + dx, y + dy);
+        const nKey = toCellKey(x + dx, y + dy);
         neighborCounts.set(nKey, (neighborCounts.get(nKey) || 0) + 1);
       }
     }

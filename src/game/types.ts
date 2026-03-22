@@ -7,6 +7,10 @@ export interface PatternDefinition {
   cells: Cell[] | ((length: number) => Cell[]);
 }
 
+export function isPatternGenerator(cells: PatternDefinition['cells']): cells is (length: number) => Cell[] {
+  return typeof cells === 'function';
+}
+
 export type PatternMap = Record<string, PatternDefinition>;
 
 export interface CameraState {

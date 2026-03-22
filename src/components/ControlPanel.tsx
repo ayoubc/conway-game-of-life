@@ -14,6 +14,7 @@ export function ControlPanel() {
   } = useGameContext();
   const [selectedPatternName, setSelectedPatternName] = useState(PATTERNS.gosperGlidingGun.name);
 
+  const panelRef = useRef<HTMLDivElement | null>(null);
   const isPanelDraggingRef = useRef(false);
   const panelDragOffsetRef = useRef<[number, number]>([0, 0]);
 
@@ -24,7 +25,7 @@ export function ControlPanel() {
   const onPanelHandleMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    const panel = document.getElementById('control-panel');
+    const panel = panelRef.current;
     if (!panel) return;
     isPanelDraggingRef.current = true;
     const panelRect = panel.getBoundingClientRect();
@@ -52,8 +53,8 @@ export function ControlPanel() {
   };
 
   return (
-    <div className="control-panel" id="control-panel">
-      <div className="panel-header" id="panel-drag-handle" onMouseDown={onPanelHandleMouseDown}>
+    <div className="control-panel" ref={panelRef}>
+      <div className="panel-header" onMouseDown={onPanelHandleMouseDown}>
         Conway&apos;s Game of Life
       </div>
 

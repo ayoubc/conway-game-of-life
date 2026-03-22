@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { GameEngine } from '../game/engine';
 import { MAX_CELL_SIZE, MIN_CELL_SIZE, renderGrid, resizeCanvasToDisplaySize, screenToWorld } from '../game/renderer';
-import { PATTERNS } from '../game/patterns';
+import { PATTERNS, resolvePatternCells } from '../game/patterns';
 import type { CameraState, Cell } from '../game/types';
 import { useGameContext } from '../context/CanvasApiContext';
+import { requestPositiveInt } from '../game/input';
 
 export function LifeCanvas() {
   const { running, speedSliderValue, randomizeTick, clearTick, patternRequest } = useGameContext();
@@ -139,17 +140,10 @@ export function LifeCanvas() {
     if (randomizeTick === prevRandomizeTickRef.current) return;
     prevRandomizeTickRef.current = randomizeTick;
 
-    while (true) {
-      const input = window.prompt('Grid size (positive integer)?', '100');
-      if (input === null) return;
-      const size = Number.parseInt(input, 10);
-      if (Number.isInteger(size) && size > 0) {
-        engineRef.current.randomizeAround(Math.floor(cameraRef.current.x), Math.floor(cameraRef.current.y), size);
-        render();
-        return;
-      }
-      window.alert('Please enter a positive integer !');
-    }
+    const size = requestPositiveInt('Grid size (positive integer)?', 100);
+    if (size === null) return;
+    engineRef.current.randomizeAround(Math.floor(cameraRef.current.x), Math.floor(cameraRef.current.y), size);
+    render();
   }, [randomizeTick]);
 
   useEffect(() => {
@@ -168,13 +162,12 @@ export function LifeCanvas() {
     const entry = Object.values(PATTERNS).find((pattern) => pattern.name === patternRequest.name);
     if (!entry) return;
 
-    let cells: Cell[];
-    if (entry.name === 'Pentadecathlon') {
-      const length = parseInt(window.prompt('Length of Pentadecathlon ?', '10') || '10', 10) || 10;
-      cells = (entry.cells as (length: number) => Cell[])(length);
-    } else {
-      cells = entry.cells as Cell[];
-    }
+    const length = typeof entry.cells === 'function'
+      ? requestPositiveInt(`Length of ${entry.name}?`, 10)
+      : 10;
+    if (length === null) return;
+
+    const cells: Cell[] = resolvePatternCells(entry, length);
 
     engineRef.current.addPattern(cells, Math.floor(cameraRef.current.x), Math.floor(cameraRef.current.y));
     render();
