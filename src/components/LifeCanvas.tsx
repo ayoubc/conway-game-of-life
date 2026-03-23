@@ -27,7 +27,14 @@ export function LifeCanvas() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    renderGrid(ctx, canvas, cameraRef.current, engineRef.current.getCells());
+    renderGrid(
+      ctx,
+      canvas,
+      cameraRef.current,
+      engineRef.current.getCells(),
+      engineRef.current.getDeadCellTraces(),
+      GameEngine.getDeadTraceTtl()
+    );
   };
 
   const stopGame = () => {

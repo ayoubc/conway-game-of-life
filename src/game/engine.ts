@@ -14,9 +14,19 @@ const NEIGHBORS: Cell[] = [
 
 export class GameEngine {
   private liveCells = new Set<CellKey>();
+  private deadCellTraces = new Map<CellKey, number>();
+  private static readonly DEAD_TRACE_TTL = 6;
 
   getCells(): Set<CellKey> {
     return this.liveCells;
+  }
+
+  getDeadCellTraces(): Map<CellKey, number> {
+    return this.deadCellTraces;
+  }
+
+  static getDeadTraceTtl(): number {
+    return GameEngine.DEAD_TRACE_TTL;
   }
 
   hasCell(x: number, y: number): boolean {
@@ -24,11 +34,16 @@ export class GameEngine {
   }
 
   addCell(x: number, y: number): void {
-    this.liveCells.add(toCellKey(x, y));
+    const key = toCellKey(x, y);
+    this.liveCells.add(key);
+    this.deadCellTraces.delete(key);
   }
 
   removeCell(x: number, y: number): void {
-    this.liveCells.delete(toCellKey(x, y));
+    const key = toCellKey(x, y);
+    if (this.liveCells.delete(key)) {
+      this.deadCellTraces.set(key, GameEngine.DEAD_TRACE_TTL);
+    }
   }
 
   toggleCell(x: number, y: number): void {
@@ -38,6 +53,7 @@ export class GameEngine {
 
   clear(): void {
     this.liveCells.clear();
+    this.deadCellTraces.clear();
   }
 
   addPattern(patternCells: Cell[], offsetX: number, offsetY: number): void {
@@ -48,6 +64,7 @@ export class GameEngine {
     const fill = fillPercentage ?? Math.floor(Math.random() * 100);
     const half = Math.floor(areaSize / 2);
     this.liveCells.clear();
+    this.deadCellTraces.clear();
 
     for (let x = centerX - half; x < centerX + half; x++) {
       for (let y = centerY - half; y < centerY + half; y++) {
@@ -57,6 +74,12 @@ export class GameEngine {
   }
 
   step(): void {
+    for (const [key, ttl] of this.deadCellTraces.entries()) {
+      const nextTtl = ttl - 1;
+      if (nextTtl <= 0) this.deadCellTraces.delete(key);
+      else this.deadCellTraces.set(key, nextTtl);
+    }
+
     const neighborCounts = new Map<CellKey, number>();
 
     for (const cellKey of this.liveCells) {
@@ -73,6 +96,16 @@ export class GameEngine {
       if (count === 3 || (currentlyAlive && count === 2)) {
         nextLiveCells.add(candidateKey);
       }
+    }
+
+    for (const cellKey of this.liveCells) {
+      if (!nextLiveCells.has(cellKey)) {
+        this.deadCellTraces.set(cellKey, GameEngine.DEAD_TRACE_TTL);
+      }
+    }
+
+    for (const cellKey of nextLiveCells) {
+      this.deadCellTraces.delete(cellKey);
     }
 
     this.liveCells = nextLiveCells;
