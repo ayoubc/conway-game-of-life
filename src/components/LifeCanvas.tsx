@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GameEngine } from '../game/engine';
 import { MAX_CELL_SIZE, MIN_CELL_SIZE, renderGrid, resizeCanvasToDisplaySize, screenToWorld } from '../game/renderer';
 import { PATTERNS, resolvePatternCells } from '../game/patterns';
@@ -16,6 +16,7 @@ export function LifeCanvas() {
   const prevRandomizeTickRef = useRef(0);
   const prevClearTickRef = useRef(0);
   const prevPatternRequestIdRef = useRef<number | null>(null);
+  const [cursorCoords, setCursorCoords] = useState<Cell | null>(null);
 
   const isDraggingRef = useRef(false);
   const dragMovedRef = useRef(false);
@@ -87,6 +88,17 @@ export function LifeCanvas() {
     };
 
     const onMouseMove = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const sx = event.clientX - rect.left;
+      const sy = event.clientY - rect.top;
+      const isInsideCanvas = sx >= 0 && sy >= 0 && sx <= rect.width && sy <= rect.height;
+
+      if (isInsideCanvas) {
+        setCursorCoords(screenToWorld(sx, sy, cameraRef.current, canvas));
+      } else {
+        setCursorCoords(null);
+      }
+
       if (!isDraggingRef.current) return;
       const dx = event.clientX - dragStartRef.current[0];
       const dy = event.clientY - dragStartRef.current[1];
@@ -112,6 +124,10 @@ export function LifeCanvas() {
       render();
     };
 
+    const onMouseLeave = () => {
+      setCursorCoords(null);
+    };
+
     const cx = Math.floor(cameraRef.current.x);
     const cy = Math.floor(cameraRef.current.y);
     engineRef.current.addPattern(PATTERNS.gosperGlidingGun.cells as Cell[], cx + 12, cy + 20);
@@ -119,6 +135,7 @@ export function LifeCanvas() {
     window.addEventListener('resize', resize);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas.addEventListener('mousedown', onMouseDown);
+    canvas.addEventListener('mouseleave', onMouseLeave);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
     resize();
@@ -128,6 +145,7 @@ export function LifeCanvas() {
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('wheel', onWheel);
       canvas.removeEventListener('mousedown', onMouseDown);
+      canvas.removeEventListener('mouseleave', onMouseLeave);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
@@ -180,5 +198,12 @@ export function LifeCanvas() {
     render();
   }, [patternRequest]);
 
-  return <canvas className="grid" id="life-canvas" ref={canvasRef}></canvas>;
+  return (
+    <>
+      <canvas className="grid" id="life-canvas" ref={canvasRef}></canvas>
+      <div className="canvas-cursor-coords">
+        {cursorCoords ? `x: ${cursorCoords[0]}, y: ${cursorCoords[1]}` : 'x: -, y: -'}
+      </div>
+    </>
+  );
 }

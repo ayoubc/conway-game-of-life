@@ -26,6 +26,21 @@ body{
     cursor: grabbing;
 }
 
+.canvas-cursor-coords {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.2;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    z-index: 9;
+    pointer-events: none;
+}
+
 .cell {
     border: .3px solid #cccccc;
 }

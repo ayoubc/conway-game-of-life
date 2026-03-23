@@ -1,0 +1,9 @@
+{
+  "name": "Pentadecathlon",
+  "generator": {
+    "type": "line",
+    "defaultLength": 10,
+    "origin": [0, 0],
+    "step": [0, 1]
+  }
+}

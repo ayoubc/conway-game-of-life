@@ -7,6 +7,7 @@ const DEAD_TRACE_FAR_COLOR: [number, number, number] = [139, 94, 60];
 const DEAD_TRACE_BLEND_DISTANCE = 6;
 const DEAD_TRACE_MAX_ALPHA = 0.18;
 const ENABLE_DEAD_TRACE_DISTANCE_GRADIENT = true;
+const ENABLE_DEAD_CELL_FADING = false; // Set to false for better performance on large grids
 
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
@@ -164,7 +165,7 @@ export function renderGrid(
     }
   }
 
-  if (deadCellTraces && deadTraceTtl > 0) {
+  if (deadCellTraces && deadTraceTtl > 0 && ENABLE_DEAD_CELL_FADING) {
     renderDeadCellTraces(ctx, canvas, camera, bounds, liveCells, deadCellTraces, deadTraceTtl);
   }
 
