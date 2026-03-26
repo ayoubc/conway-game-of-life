@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "homepage": "https://ayoubc.github.io/conway-game-of-life",
   "type": "module",
+  "engines": {
+    "node": ">=20.19.5"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
