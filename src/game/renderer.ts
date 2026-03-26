@@ -1,19 +1,43 @@
 import type { CameraState, Cell, CellKey, VisibleBounds } from './types';
 import { fromCellKey } from './cellKey';
+import type { GameTheme } from '../context/CanvasApiContext';
 
-const LIVE_CELL_COLOR: [number, number, number] = [0, 0, 0];
-const DEAD_TRACE_NEAR_COLOR: [number, number, number] = [45, 110, 255];
-const DEAD_TRACE_FAR_COLOR: [number, number, number] = [139, 94, 60];
+type RGB = [number, number, number];
+
+const DEAD_TRACE_NEAR_COLOR: RGB = [45, 110, 255];
+const DEAD_TRACE_FAR_COLOR: RGB = [139, 94, 60];
 const DEAD_TRACE_BLEND_DISTANCE = 6;
 const DEAD_TRACE_MAX_ALPHA = 0.18;
 const ENABLE_DEAD_TRACE_DISTANCE_GRADIENT = true;
 const ENABLE_DEAD_CELL_FADING = false; // Set to false for better performance on large grids
 
+interface ThemePalette {
+  background: RGB;
+  minorGrid: RGB;
+  majorGrid: RGB;
+  liveCell: RGB;
+}
+
+const THEME_PALETTES: Record<GameTheme, ThemePalette> = {
+  light: {
+    background: [233, 233, 233],
+    minorGrid: [184, 184, 184],
+    majorGrid: [143, 143, 143],
+    liveCell: [0, 0, 0]
+  },
+  dark: {
+    background: [22, 22, 22],
+    minorGrid: [47, 47, 47],
+    majorGrid: [71, 71, 71],
+    liveCell: [255, 255, 0]
+  }
+};
+
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }
 
-function rgb(...arr: [number, number, number]): string {
+function rgb(...arr: RGB): string {
   const [r, g, b] = arr;
   return `rgb(${r}, ${g}, ${b})`;
 }
@@ -113,20 +137,22 @@ export function renderGrid(
   canvas: HTMLCanvasElement,
   camera: CameraState,
   liveCells: Set<CellKey>,
+  theme: GameTheme,
   deadCellTraces?: Map<CellKey, number>,
   deadTraceTtl = 1
 ): void {
+  const palette = THEME_PALETTES[theme];
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
 
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = '#e9e9e9';
+  ctx.fillStyle = rgb(...palette.background);
   ctx.fillRect(0, 0, width, height);
 
   const bounds = getVisibleWorldBounds(camera, canvas);
 
   if (camera.cellSize >= 4) {
-    ctx.strokeStyle = '#b8b8b8';
+    ctx.strokeStyle = rgb(...palette.minorGrid);
     ctx.lineWidth = 1;
     for (let x = bounds.minX; x <= bounds.maxX; x++) {
       if (x % 10 === 0) continue;
@@ -145,7 +171,7 @@ export function renderGrid(
       ctx.stroke();
     }
 
-    ctx.strokeStyle = '#8f8f8f';
+    ctx.strokeStyle = rgb(...palette.majorGrid);
     ctx.lineWidth = 1.2;
     for (let x = bounds.minX; x <= bounds.maxX; x++) {
       if (x % 10 !== 0) continue;
@@ -169,7 +195,7 @@ export function renderGrid(
     renderDeadCellTraces(ctx, canvas, camera, bounds, liveCells, deadCellTraces, deadTraceTtl);
   }
 
-  ctx.fillStyle = rgb(...LIVE_CELL_COLOR);
+  ctx.fillStyle = rgb(...palette.liveCell);
   for (const cellKey of liveCells) {
     const [x, y] = fromCellKey(cellKey);
     if (x < bounds.minX || x > bounds.maxX || y < bounds.minY || y > bounds.maxY) continue;

@@ -7,12 +7,13 @@ import { useGameContext } from '../context/CanvasApiContext';
 import { requestPositiveInt } from '../game/input';
 
 export function LifeCanvas() {
-  const { running, speedSliderValue, randomizeTick, clearTick, patternRequest } = useGameContext();
+  const { running, speedSliderValue, randomizeTick, clearTick, patternRequest, theme } = useGameContext();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef(new GameEngine());
   const cameraRef = useRef<CameraState>({ x: 25, y: 25, cellSize: 10 });
   const intervalRef = useRef<number | null>(null);
   const speedSecondsRef = useRef(0.02);
+  const themeRef = useRef(theme);
   const prevRandomizeTickRef = useRef(0);
   const prevClearTickRef = useRef(0);
   const prevPatternRequestIdRef = useRef<number | null>(null);
@@ -33,6 +34,7 @@ export function LifeCanvas() {
       canvas,
       cameraRef.current,
       engineRef.current.getCells(),
+      themeRef.current,
       engineRef.current.getDeadCellTraces(),
       GameEngine.getDeadTraceTtl()
     );
@@ -52,6 +54,11 @@ export function LifeCanvas() {
       render();
     }, speedSecondsRef.current * 1000);
   };
+
+  useEffect(() => {
+    themeRef.current = theme;
+    render();
+  }, [theme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -201,7 +208,7 @@ export function LifeCanvas() {
   return (
     <>
       <canvas className="grid" id="life-canvas" ref={canvasRef}></canvas>
-      <div className="canvas-cursor-coords">
+      <div className={`canvas-cursor-coords ${theme === 'dark' ? 'canvas-cursor-coords-dark' : ''}`}>
         {cursorCoords ? `x: ${cursorCoords[0]}, y: ${cursorCoords[1]}` : 'x: -, y: -'}
       </div>
     </>

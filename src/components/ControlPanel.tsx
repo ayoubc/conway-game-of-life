@@ -6,6 +6,8 @@ export function ControlPanel() {
   const {
     running,
     setRunning,
+    theme,
+    setTheme,
     speedSliderValue,
     setSpeedSliderValue,
     requestRandomize,
@@ -53,9 +55,22 @@ export function ControlPanel() {
   };
 
   return (
-    <div className="control-panel" ref={panelRef}>
+    <div className={`control-panel ${theme === 'dark' ? 'control-panel-dark' : ''}`} ref={panelRef}>
       <div className="panel-header" onMouseDown={onPanelHandleMouseDown}>
         Conway&apos;s Game of Life
+      </div>
+
+      <div className="mar-btm">
+        <label htmlFor="theme-select">Theme:</label>
+        <select
+          id="theme-select"
+          className="radius-brdr"
+          value={theme}
+          onChange={(e) => setTheme(e.target.value as 'light' | 'dark')}
+        >
+          <option value="light">Light (dark cells)</option>
+          <option value="dark">Dark (yellow cells)</option>
+        </select>
       </div>
 
       <button className="start-btn mar-btm" onClick={toggleRun}>{running ? 'Stop' : 'Start'}</button>

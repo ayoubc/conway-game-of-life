@@ -1,15 +1,23 @@
 import './App.css';
 import { LifeCanvas } from './components/LifeCanvas';
 import { ControlPanel } from './components/ControlPanel';
-import { GameProvider } from './context/CanvasApiContext';
+import { GameProvider, useGameContext } from './context/CanvasApiContext';
+
+function ThemedGameScene() {
+  const { theme } = useGameContext();
+
+  return (
+    <div className={`root ${theme === 'dark' ? 'theme-dark' : 'theme-light'}`}>
+      <LifeCanvas />
+      <ControlPanel />
+    </div>
+  );
+}
 
 function App() {
   return (
     <GameProvider>
-      <div className="root">
-        <LifeCanvas />
-        <ControlPanel />
-      </div>
+      <ThemedGameScene />
     </GameProvider>
   );
 }
